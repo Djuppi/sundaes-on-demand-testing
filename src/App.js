@@ -1,24 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import Container from 'react-bootstrap/Container'
+import OrderEntry from './pages/entry/OrderEntry';
+import OrderSummary from './pages/summary/OrderSummary';
+import OrderConfirmation from './pages/confirmation/OrderConfirmation';
+import { OrderDetailsProvider } from './contexts/OrderDetails';
+import { useEffect, useState } from 'react';
 
 function App() {
+
+  const [orderPhase, setOrderPhase] = useState('inProgress');
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+
+  let Component = OrderEntry;
+  switch (orderPhase) {
+    case 'inProgress':
+      Component = OrderEntry;
+      break;
+    case 'review': 
+      Component = OrderSummary;
+      break;
+    case 'completed':
+      Component = OrderConfirmation;
+      break;
+    default:
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      
+        <OrderDetailsProvider>
+          <Container>
+            {<Component setOrderPhase={setOrderPhase} />}
+          </Container>
+        </OrderDetailsProvider>
+      
+      
   );
 }
 

@@ -1,11 +1,15 @@
 import { rest } from 'msw';
 
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export const handlers = [
     rest.get("http://localhost:3030/scoops", (req,res, ctx) => {
         return res(
             ctx.json([
                 { name: 'Chocolate', imagePath: '/images/chocolate.png'},
-                { name: 'Vanilla', imagePath: '/images/vanilla.png'}
+                { name: 'Vanilla', imagePath: '/images/vanilla.png'},
             ])
         )
     }),
@@ -17,5 +21,8 @@ export const handlers = [
                 { name: 'Hot Fudge', imagePath: '/images/hot-fudge.png'}
             ])
         )
-    })
+    }),
+    rest.post("http://localhost:3030/order", (req, res, ctx) => {
+        return res(ctx.json({ orderNumber: 1234567 }));
+      }),
 ]
